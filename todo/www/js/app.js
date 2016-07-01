@@ -1,24 +1,29 @@
-// Ionic Starter App
+// We use an "Immediate Function" to initialize the application to avoid leaving anything behind in the global scope
+(function () {
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic'])
+    /* ---------------------------------- Local Variables ---------------------------------- */
+    var service = new EmployeeService();
+    service.initialize().done(function () {
+        console.log("Service initialized");
+    });
 
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    if(window.cordova && window.cordova.plugins.Keyboard) {
-      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-      // for form inputs)
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    /* --------------------------------- Event Registration -------------------------------- */
+    $('.search-key').on('keyup', findByName);
+    $('.help-btn').on('click', function() {
+        alert("Employee Directory v3.4");
+    });
 
-      // Don't remove this line unless you know what you are doing. It stops the viewport
-      // from snapping when text inputs are focused. Ionic handles this internally for
-      // a much nicer keyboard experience.
-      cordova.plugins.Keyboard.disableScroll(true);
+    /* ---------------------------------- Local Functions ---------------------------------- */
+    function findByName() {
+        service.findByName($('.search-key').val()).done(function (employees) {
+            var l = employees.length;
+            var e;
+            $('.employee-list').empty();
+            for (var i = 0; i < l; i++) {
+                e = employees[i];
+                $('.employee-list').append('<li><a href="#employees/' + e.id + '">' + e.firstName + ' ' + e.lastName + '</a></li>');
+            }
+        });
     }
-    if(window.StatusBar) {
-      StatusBar.styleDefault();
-    }
-  });
-})
+
+}());
