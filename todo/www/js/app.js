@@ -7,18 +7,21 @@
     EmployeeView.prototype.template = Handlebars.compile($("#employee-tpl").html());
 
     var service = new EmployeeService();
+    var slider = new PageSlider($('body'));
     service.initialize().done(function () {
-      router.addRoute('', function() {
-          $('body').html(new HomeView(service).render().$el);
-      });
+        router.addRoute('', function() {
+            console.log('empty');
+            slider.slidePage(new HomeView(service).render().$el);
+        });
 
-      router.addRoute('employees/:id', function(id) {
-          service.findById(parseInt(id)).done(function(employee) {
-              $('body').html(new EmployeeView(employee).render().$el);
-          });
-      });
+        router.addRoute('employees/:id', function(id) {
+            console.log('details');
+            service.findById(parseInt(id)).done(function(employee) {
+                slider.slidePage(new EmployeeView(employee).render().$el);
+            });
+        });
 
-      router.start();
+        router.start();
     });
 
     /* --------------------------------- Event Registration -------------------------------- */
